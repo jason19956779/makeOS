@@ -74,7 +74,7 @@ void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
 	HAL_NVIC_SetPendingIRQ(PendSV_IRQn);
-	SCB->ICSR = SCB_ICSR_PENDSVSET_Msk;
+	SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
   /* USER CODE END SysTick_IRQn 0 */
 	HAL_IncTick();
 	HAL_SYSTICK_IRQHandler();
