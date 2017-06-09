@@ -36,7 +36,7 @@
 #include "stm32f4xx_it.h"
 
 /* USER CODE BEGIN 0 */
-
+#include "main.h"
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -61,11 +61,7 @@ void SVC_Handler(void)
 /**
 * @brief This function handles Pendable request for system service.
 */
-/*
-void PendSV_Handler(void)
-{
-}
-*/
+
 
 /**
 * @brief This function handles System tick timer.
