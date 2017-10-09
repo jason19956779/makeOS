@@ -206,7 +206,6 @@ void HAL_ETH_MspDeInit(ETH_HandleTypeDef* ethHandle)
  */
 static void low_level_init(struct netif *netif)
 { 
-  uint32_t regvalue = 0;
   HAL_StatusTypeDef hal_eth_init_status;
   
 /* Init ETH */
@@ -214,10 +213,10 @@ static void low_level_init(struct netif *netif)
    uint8_t MACAddr[6] ;
   heth.Instance = ETH;
   heth.Init.AutoNegotiation = ETH_AUTONEGOTIATION_ENABLE;
-  heth.Init.PhyAddress = LAN8742A_PHY_ADDRESS;
-  MACAddr[0] = 0x00;
-  MACAddr[1] = 0x80;
-  MACAddr[2] = 0xE1;
+  heth.Init.PhyAddress = LAN8720A_PHY_ADDRESS_PHY_ADDRESS;
+  MACAddr[0] = 0x02;
+  MACAddr[1] = 0x00;
+  MACAddr[2] = 0x00;
   MACAddr[3] = 0x00;
   MACAddr[4] = 0x00;
   MACAddr[5] = 0x00;
@@ -274,16 +273,6 @@ static void low_level_init(struct netif *netif)
     
 /* USER CODE END PHY_PRE_CONFIG */
   
-
-  /* Read Register Configuration */
-  HAL_ETH_ReadPHYRegister(&heth, PHY_ISFR, &regvalue);
-  regvalue |= (PHY_ISFR_INT4);
-
-  /* Enable Interrupt on change of link status */ 
-  HAL_ETH_WritePHYRegister(&heth, PHY_ISFR , regvalue );
-  
-  /* Read Register Configuration */
-  HAL_ETH_ReadPHYRegister(&heth, PHY_ISFR , &regvalue);
 
 /* USER CODE BEGIN PHY_POST_CONFIG */ 
     
@@ -604,6 +593,42 @@ u32_t sys_now(void)
 }
 
 /* USER CODE END 6 */
+
+/**
+  * @brief  This function sets the netif link status.
+  * @note   This function should be included in the main loop to poll 
+  *         for the link status update  
+  * @param  netif: the network interface
+  * @retval None
+  */
+uint32_t EthernetLinkTimer=0; 
+  
+void ethernetif_set_link(struct netif *netif)
+{
+  uint32_t regvalue = 0;
+  /* Ethernet Link every 200ms */
+  if (HAL_GetTick() - EthernetLinkTimer >= 200)
+  {
+    EthernetLinkTimer = HAL_GetTick(); 
+    
+    /* Read PHY_BSR*/
+    HAL_ETH_ReadPHYRegister(&heth, PHY_BSR, &regvalue);
+    
+    regvalue &= PHY_LINKED_STATUS;
+    
+    /* Check whether the netif link down and the PHY link is up */
+    if(!netif_is_link_up(netif) && (regvalue))
+    {
+      /* network cable is connected */ 
+      netif_set_link_up(netif);        
+    }
+    else if(netif_is_link_up(netif) && (!regvalue))
+    {
+      /* network cable is disconnected */
+      netif_set_link_down(netif);
+    }
+  }
+}
 
 /* USER CODE BEGIN 7 */
 
