@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Project>
-<ProjectName>D:\Desktop\WORK\NET\\NET</ProjectName>
+<ProjectName>D:\Desktop\WORK\NETOS\\NETOS</ProjectName>
 <CMSIS>..\Drivers\CMSIS</CMSIS>
 <HAL_Driver>C:\Users\User\STM32Cube\Repository\STM32Cube_FW_F4_V1.17.0\Drivers\CMSIS</HAL_Driver>
 
@@ -11,6 +11,10 @@
 <filestoremove>
 	<file>
 	   		<name>..\Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f429xx.s</name>
+	   		<name>..\Src\gpio.c</name>
+	   		<name>..\Src\i2c.c</name>
+	   		<name>..\Src\spi.c</name>
+	   		<name>..\Src\usart.c</name>
 	</file>
 </filestoremove>
 
@@ -24,7 +28,7 @@
 
 <configs>
   <config>
-    <name>NET</name>				
+    <name>NETOS</name>				
     <device>STM32F429ZITx</device>		 
     <heapSize>0x200</heapSize>
     <stackSize>0x1000</stackSize>
@@ -40,11 +44,9 @@
         <define></define>
     </Adefines>   
 
-    <UsedFreeRTOS></UsedFreeRTOS>
+    <UsedFreeRTOS>true</UsedFreeRTOS>
     <Aincludes>
-
-
-	    	<include></include>
+	   			<include>..\Inc</include>
     </Aincludes>
     <Cdefines>
     </Cdefines>
@@ -66,8 +68,11 @@
 	   <include>..\Middlewares\Third_Party\LwIP\system</include>
 	   <include>..\Drivers\STM32F4xx_HAL_Driver\Inc</include>
 	   <include>..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy</include>
+	   <include>..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F</include>
 	   <include>..\Middlewares\Third_Party\LwIP\src\include\netif\ppp</include>
 	   <include>..\Drivers\CMSIS\Device\ST\STM32F4xx\Include</include>
+	   <include>..\Middlewares\Third_Party\FreeRTOS\Source\include</include>
+	   <include>..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS</include>
 	   <include>..\Middlewares\Third_Party\LwIP\src\include\lwip</include>
 	   <include>..\Middlewares\Third_Party\LwIP\src\include\lwip\apps</include>
 	   <include>..\Middlewares\Third_Party\LwIP\src\include\lwip\priv</include>
@@ -86,6 +91,36 @@
 
       <group>
         <name>Middlewares</name>  
+                    <group>
+                            <name>FreeRTOS</name>
+                                            <file>
+                                                    <name>../Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c</name>
+                                            </file>
+                                            <file>
+                                                    <name>../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/port.c</name>
+                                            </file>
+                                            <file>
+                                                    <name>../Middlewares/Third_Party/FreeRTOS/Source/croutine.c</name>
+                                            </file>
+                                            <file>
+                                                    <name>../Middlewares/Third_Party/FreeRTOS/Source/event_groups.c</name>
+                                            </file>
+                                            <file>
+                                                    <name>../Middlewares/Third_Party/FreeRTOS/Source/list.c</name>
+                                            </file>
+                                            <file>
+                                                    <name>../Middlewares/Third_Party/FreeRTOS/Source/queue.c</name>
+                                            </file>
+                                            <file>
+                                                    <name>../Middlewares/Third_Party/FreeRTOS/Source/tasks.c</name>
+                                            </file>
+                                            <file>
+                                                    <name>../Middlewares/Third_Party/FreeRTOS/Source/timers.c</name>
+                                            </file>
+                                            <file>
+                                                    <name>../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.c</name>
+                                            </file>
+                </group>
                     <group>
                             <name>LwIP</name>
                                             <file>
@@ -298,6 +333,9 @@
                                             <file>
                                                     <name>../Middlewares/Third_Party/LwIP/src/core/ipv6/nd6.c</name>
                                             </file>
+                                            <file>
+                                                    <name>../Middlewares/Third_Party/LwIP/system/OS/sys_arch.c</name>
+                                            </file>
                 </group>
       </group> 
 	   <group>
@@ -378,11 +416,7 @@
                                 </file>
 
                                 <file>
-                                 <name>..\Src\gpio.c</name>
-                                </file>
-
-                                <file>
-                                 <name>..\Src\i2c.c</name>
+                                 <name>..\Src\freertos.c</name>
                                 </file>
 
                                 <file>
@@ -394,19 +428,15 @@
                                 </file>
 
                                 <file>
-                                 <name>..\Src\spi.c</name>
-                                </file>
-
-                                <file>
-                                 <name>..\Src\usart.c</name>
-                                </file>
-
-                                <file>
                                  <name>..\Src\stm32f4xx_it.c</name>
                                 </file>
 
                                 <file>
                                  <name>..\Src\stm32f4xx_hal_msp.c</name>
+                                </file>
+
+                                <file>
+                                 <name>..\Src\stm32f4xx_hal_timebase_TIM.c</name>
                                 </file>
 
 
