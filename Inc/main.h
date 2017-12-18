@@ -136,10 +136,6 @@
 #define I2C3_SDA_GPIO_Port GPIOC
 #define I2C3_SCL_Pin GPIO_PIN_8
 #define I2C3_SCL_GPIO_Port GPIOA
-#define STLINK_RX_Pin GPIO_PIN_9
-#define STLINK_RX_GPIO_Port GPIOA
-#define STLINK_TX_Pin GPIO_PIN_10
-#define STLINK_TX_GPIO_Port GPIOA
 #define SWDIO_Pin GPIO_PIN_13
 #define SWDIO_GPIO_Port GPIOA
 #define SWCLK_Pin GPIO_PIN_14
@@ -167,6 +163,7 @@
 
 /* USER CODE BEGIN Private defines */
 void Toggle_Leds(void);
+int print(char *string);
 /* USER CODE END Private defines */
 
 void _Error_Handler(char *, int);

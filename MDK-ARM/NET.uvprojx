@@ -134,11 +134,11 @@
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
             <Capability>1</Capability>
-            <DriverSelection>4107</DriverSelection>
+            <DriverSelection>4100</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>STLink\ST-LINKIII-KEIL_SWO.dll</Flash2>
-          <Flash3></Flash3>
+          <Flash3>"D:\stlink-1.3.0-win64\bin\st-flash.exe" (write ./NET/NET.axf 0x8000000)</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -159,11 +159,11 @@
             <ldmm>1</ldmm>
             <ldXref>1</ldXref>
             <BigEnd>0</BigEnd>
-            <AdsALst>1</AdsALst>
+            <AdsALst>0</AdsALst>
             <AdsACrf>1</AdsACrf>
             <AdsANop>0</AdsANop>
             <AdsANot>0</AdsANot>
-            <AdsLLst>1</AdsLLst>
+            <AdsLLst>0</AdsLLst>
             <AdsLmap>1</AdsLmap>
             <AdsLcgr>1</AdsLcgr>
             <AdsLsym>1</AdsLsym>
@@ -336,7 +336,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F429xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;                 ../Middlewares/Third_Party/LwIP/src/include;                 ../Middlewares/Third_Party/LwIP/system;                 ../Drivers/STM32F4xx_HAL_Driver/Inc;                 ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;                 ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;                 ../Middlewares/Third_Party/LwIP/src/include/lwip;                 ../Middlewares/Third_Party/LwIP/src/include/lwip/apps;                 ../Middlewares/Third_Party/LwIP/src/include/lwip/priv;                 ../Middlewares/Third_Party/LwIP/src/include/lwip/prot;                 ../Middlewares/Third_Party/LwIP/src/include/netif;                 ../Middlewares/Third_Party/LwIP/src/include/netif/ppp;                 ../Middlewares/Third_Party/LwIP/src/include/netif/ppp/polarssl;                 ../Middlewares/Third_Party/LwIP/src/include/posix;                 ../Middlewares/Third_Party/LwIP/src/include/posix/sys;                 ../Middlewares/Third_Party/LwIP/system/arch;                 ../Drivers/CMSIS/Include;                 ..\Drivers\BSP\STM32F429I-Discovery</IncludePath>
+              <IncludePath>../Inc;                      ../Middlewares/Third_Party/LwIP/src/include;                      ../Middlewares/Third_Party/LwIP/system;                      ../Drivers/STM32F4xx_HAL_Driver/Inc;                      ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;                      ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;                      ../Middlewares/Third_Party/LwIP/src/include/lwip;                      ../Middlewares/Third_Party/LwIP/src/include/lwip/apps;                      ../Middlewares/Third_Party/LwIP/src/include/lwip/priv;                      ../Middlewares/Third_Party/LwIP/src/include/lwip/prot;                      ../Middlewares/Third_Party/LwIP/src/include/netif;                      ../Middlewares/Third_Party/LwIP/src/include/netif/ppp;                      ../Middlewares/Third_Party/LwIP/src/include/netif/ppp/polarssl;                      ../Middlewares/Third_Party/LwIP/src/include/posix;                      ../Middlewares/Third_Party/LwIP/src/include/posix/sys;                      ../Middlewares/Third_Party/LwIP/system/arch;                      ../Drivers/CMSIS/Include;                      ..\Drivers\BSP\STM32F429I-Discovery</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>

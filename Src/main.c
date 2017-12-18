@@ -51,6 +51,7 @@
 #include "lwip.h"
 
 /* USER CODE BEGIN Includes */
+#include <stdio.h>
 #include "stm32f429i_discovery.h"
 #include "tcp_echoserver.c"
 /* USER CODE END Includes */
@@ -59,8 +60,12 @@
 CRC_HandleTypeDef hcrc;
 
 I2C_HandleTypeDef hi2c3;
+DMA_HandleTypeDef hdma_i2c3_rx;
+DMA_HandleTypeDef hdma_i2c3_tx;
 
 SPI_HandleTypeDef hspi5;
+
+TIM_HandleTypeDef htim2;
 
 UART_HandleTypeDef huart1;
 
@@ -68,21 +73,35 @@ SDRAM_HandleTypeDef hsdram1;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_DMA_Init(void);
 static void MX_FMC_Init(void);
 static void MX_I2C3_Init(void);
 static void MX_SPI5_Init(void);
-static void MX_USART1_UART_Init(void);
 static void MX_CRC_Init(void);
+static void MX_TIM2_Init(void);
+static void MX_USART1_UART_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-int puts(const char *string);
+#ifdef __GNU__
+	#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#else
+	#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#endif
+
+PUTCHAR_PROTOTYPE
+{
+  /* Write a character to the USART */
+  HAL_UART_Transmit(&huart1, (uint8_t*)&ch, 1, 100);
+  return ch;
+}
+	
+int print(char *string);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
@@ -114,29 +133,29 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_FMC_Init();
   MX_I2C3_Init();
   MX_LWIP_Init();
   MX_SPI5_Init();
-  MX_USART1_UART_Init();
   MX_CRC_Init();
+  MX_TIM2_Init();
+  MX_USART1_UART_Init();
 
   /* USER CODE BEGIN 2 */
-	BSP_LED_On(LED3);
-	BSP_LED_Off(LED4);
   tcp_echoserver_init();
-	HAL_Delay(500);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		puts("FW for what? Free Win.\n");
-		MX_LWIP_Process();
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
+		print("Hello\n\r");
+  	HAL_Delay(200);
+		MX_LWIP_Process();
   }
   /* USER CODE END 3 */
 
@@ -163,10 +182,17 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 25;
-  RCC_OscInitStruct.PLL.PLLN = 336;
+  RCC_OscInitStruct.PLL.PLLN = 360;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 7;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Activate the Over-Drive mode 
+    */
+  if (HAL_PWREx_EnableOverDrive() != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
@@ -253,6 +279,39 @@ static void MX_SPI5_Init(void)
 
 }
 
+/* TIM2 init function */
+static void MX_TIM2_Init(void)
+{
+
+  TIM_SlaveConfigTypeDef sSlaveConfig;
+  TIM_MasterConfigTypeDef sMasterConfig;
+
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 0;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 0;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+  sSlaveConfig.SlaveMode = TIM_SLAVEMODE_DISABLE;
+  sSlaveConfig.InputTrigger = TIM_TS_ITR1;
+  if (HAL_TIM_SlaveConfigSynchronization(&htim2, &sSlaveConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+}
+
 /* USART1 init function */
 static void MX_USART1_UART_Init(void)
 {
@@ -269,6 +328,24 @@ static void MX_USART1_UART_Init(void)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
+
+}
+
+/** 
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void) 
+{
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA1_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA1_Stream2_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream2_IRQn);
+  /* DMA1_Stream4_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream4_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream4_IRQn);
 
 }
 /* FMC initialization function */
@@ -451,12 +528,15 @@ void Toggle_Leds(void)
   }
 }
 
-int puts(const char *string)
+int print(char *string)
 {
 	int i = 0;
-	const char* ch = string;
-	while (*ch++ != '\0') i++;
-	HAL_UART_Transmit(&huart1, (uint8_t *)string, i, 0xFFFF);
+	uint8_t ch = (uint8_t)*(string+i);
+	while (ch != 0) {
+		HAL_UART_Transmit(&huart1, &ch, 1, 100);
+		i+=1;
+		ch = (uint8_t)*(string+i);
+	}
 	return 0;
 }
 /* USER CODE END 4 */
